@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: ListTableFormulas_Clean
+' 📌 Macro: Export_ExcelTable_Formulas_ToMarkdown
 ' 📁 Module Purpose:
 '     Scans all Excel tables in the current workbook and creates a comprehensive Markdown
 '     documentation file in your Downloads folder. Maps structure, formulas, and relationships.
@@ -38,7 +38,7 @@
 '
 ' ==========================================================================================
 
-Sub ListTableFormulas_Clean()
+Sub Export_ExcelTable_Formulas_ToMarkdown()
     Dim ws As Worksheet, tbl As ListObject, col As ListColumn
     Dim strFilePath As String, fileNum As Integer
     Dim tableCount As Long
