@@ -1,36 +1,40 @@
 ' ==========================================================================================
 ' 📌 Macro: GenerateAdvancedPivotReport
 ' 📁 Module Purpose:
-'     Scans all Excel tables (ListObjects) in a workbook, generating a Markdown-formatted
-'     documentation file. The output includes table structure, cell locations, formulas,
-'     and inter-table references — optimized for AI tools or human review.
+'     Scans all PivotTables in a workbook, generating a comprehensive Markdown-formatted
+'     documentation file. The output includes pivot structure, field configurations, formulas,
+'     OLAP connections, and layout details — optimized for AI tools or human review.
 '
 ' ------------------------------------------------------------------------------------------
 ' ✅ Sample Output (Markdown format):
-'     # TABLE: Table3
-'     Worksheet: Calculations
-'     Table Range: $A$1:$AJ$1091
+'     # PivotTable: SalesAnalysis
+'     Worksheet: Dashboard
+'     Type: Regular PivotTable
+'     Data Source: SalesData
 '     ...
-'     ## COLUMN FORMULAS
-'     | Column Index | Column Name | Has Formula | Formula | Formula Category |
-'     |--------------|-------------|-------------|---------|------------------|
-'     | 2 | ASF | Yes | =IFERROR(SUMIFS(...)) | Aggregation (SUMIFS) (References Table2) |
+'     ## Fields
+'     | Field Name | Source Name | Orientation | In Layout? | Caption |
+'     |------------|-------------|-------------|------------|---------|
+'     | Region | Region | Row | Yes | Region |
+'     | Sales Amount | Sales | Values | Yes | Sum of Sales |
 '
 ' ------------------------------------------------------------------------------------------
 ' 🔍 Code Behavior Overview:
-'     - Loops through all worksheets and ListObjects
-'     - Records structural metadata (headers, ranges, row/col counts)
-'     - Extracts formulas from columns, categorizes by function
-'     - Detects cross-table references
-'     - Exports output as Markdown to Downloads folder
+'     - Loops through all worksheets and PivotTables
+'     - Records structural metadata (fields, orientations, data sources)
+'     - Extracts OLAP connection details and MDX references
+'     - Documents calculated fields, slicers, and layout settings
+'     - Detects relationships between regular and OLAP pivot tables
+'     - Exports output as Markdown to user-specified location
 '
 ' ------------------------------------------------------------------------------------------
 ' 🛠️ Notes:
-'     - Output saved to: %USERPROFILE%\Downloads\Table_Formulas_AI.txt
+'     - Output saved to user-selected .md file location
 '     - No data is modified — read-only process
-'     - Handles both empty and populated tables
+'     - Handles both OLAP and regular PivotTables
 '     - Markdown output readable in Obsidian, GitHub, Notepad++, etc.
-'     - Long formulas are truncated to ~250 chars for readability
+'     - Includes comprehensive OLAP connection string analysis
+'     - Documents slicer connections and calculated field formulas
 '
 ' ==========================================================================================
 '==================================================================================================
