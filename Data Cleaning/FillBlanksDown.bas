@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: FillBlanks_FromAbove
+' 📌 Macro: FillBlanksDown
 ' 📁 Module Purpose:
 '     Fills blank cells in a selected range with the value from the cell directly above it.
 '     This is commonly used for cleaning exports or grouped data that omits repeated labels.
@@ -31,7 +31,7 @@
 '
 ' ==========================================================================================
 
-Sub FillBlanks_FromAbove()
+Sub FillBlanksDown()
     ' Purpose: Fills empty cells in a selection with the value from the cell directly above
 
     Dim originalSelection As Range
