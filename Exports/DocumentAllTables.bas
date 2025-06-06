@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: ListTableFields_Combined
+' 📌 Macro: DocumentAllTables
 ' 📁 Module Purpose:
 '     Creates a comprehensive Markdown-style documentation of **all Excel Tables (ListObjects)**
 '     in the current workbook — ideal for auditing, AI analysis, or developer metadata mapping.
@@ -50,7 +50,7 @@
 '     Defaults to: `C:\Users\<YourUsername>\Downloads\Table_FieldMap_Combined.txt`
 '
 ' ==========================================================================================
-Sub ListTableFields_Combined()
+Sub DocumentAllTables()
     ' Purpose: Creates a comprehensive mapping of all tables (ListObjects) in a workbook
     ' Output: Markdown-formatted text file for AI and documentation purposes
 
