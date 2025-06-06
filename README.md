@@ -3,10 +3,10 @@
 This repository contains a curated set of Excel VBA macros, organized as `.bas` code modules for easy reuse and import into any Excel workbook.
 
 These macros are designed for:
-- ✅ Data cleaning
-- ✅ Table exports
-- ✅ PivotTable documentation
-- ✅ Utility functions (e.g. hyperlink extraction, autofill)
+- ✅ **Data cleaning** and transformation
+- ✅ **Smart exports** (CSV, Markdown) with advanced formatting
+- ✅ **Comprehensive documentation** of PivotTables and Excel Tables
+- ✅ **Utility functions** for hyperlink extraction and data manipulation
 
 All files are stored as **plain-text `.bas` modules**, which can be imported directly into Excel's VBA editor.
 
@@ -24,14 +24,14 @@ You can download and use the macros in this repository in two ways:
 
 ### Option 1: Download the Entire Toolkit
 1. Click the green **`Code`** button at the top of this page.
-2. Select **“Download ZIP”**.
+2. Select **"Download ZIP"**.
 3. Once downloaded, unzip the file on your computer.
-4. Inside the unzipped folder, you’ll find organized folders such as `DataCleaning`, `Exports`, and `Utilities`, each containing `.bas` files.
+4. Inside the unzipped folder, you'll find organized folders such as `DataCleaning`, `Exports`, and `Utilities`, each containing `.bas` files.
 
 ### Option 2: Download an Individual Macro
 1. Click on the `.bas` file you want.
 2. Click the **`Raw`** button to view the plain text.
-3. Right-click the page and select **“Save As…”**.
+3. Right-click the page and select **"Save As…"**.
 4. Ensure the file is saved with a `.bas` extension (e.g., `ExportPivotToMarkdown.bas`).
 
 ---
@@ -74,7 +74,7 @@ You will now see the **Developer** tab in the ribbon, which gives access to the 
 7. Press `Alt + Q` to return to Excel.
 8. Press `Alt + F8`, select the macro, and click **Run**.
 
-> 💡 You can import and use multiple macros in the same workbook.
+> 💡 **Pro Tip:** You can import and use multiple macros in the same workbook. For frequently used macros, consider adding them to your Personal Macro Workbook (`PERSONAL.XLSB`) to make them available in all Excel files.
 
 ---
 
@@ -82,22 +82,28 @@ You will now see the **Developer** tab in the ribbon, which gives access to the 
 
 - Microsoft Excel (Windows or Mac)
 - Macro-enabled workbook format (`.xlsm`)
-- Macros must be enabled in Excel (click “Enable Content” if prompted)
+- Macros must be enabled in Excel (click "Enable Content" if prompted)
+- For optimal performance: Excel 2016 or later recommended
 
 ---
 
 ## 📁 Repository Structure
 
-Each folder groups macros by category. Below is a representative structure (not exhaustive):
+Each folder groups macros by category. Below is the current structure:
 
 ```text
 Excel-VBA-Toolkit/
-├── Data Cleaning/
-│   └── [e.g. Delete Hidden Rows.bas, Fill Cell from Above.bas]
+├── DataCleaning/
+│   ├── DeleteHiddenRowsOptimized.bas
+│   └── FillBlanksDown.bas
 ├── Exports/
-│   └── [e.g. Export Pivot Table to Markdown.bas, Export Range to CSV.bas]
+│   ├── ExportPivotToMarkdown.bas
+│   ├── ExportRangeToCSV.bas
+│   ├── DocumentTableFormulas.bas
+│   ├── DocumentAllTables.bas
+│   └── GenerateAdvancedPivotReport.bas
 ├── Utilities/
-│   └── [e.g. Extract URL from Hyperlink.bas]
+│   └── GetHyperlinkURL.bas
 └── README.md
 ```
 
@@ -105,41 +111,65 @@ Excel-VBA-Toolkit/
 
 ## 📌 Macro Descriptions
 
-Brief summaries of what each `.bas` file in the toolkit does:
+Detailed summaries of what each `.bas` file in the toolkit does:
 
-### 🔄 Data Cleaning
+### 🧹 Data Cleaning
 
-- **`Delete Hidden Rows.bas`**  
-  Deletes all rows hidden by filters across all visible sheets. Ideal for prepping data before export or transformation.
+- **`DeleteHiddenRowsOptimized.bas`**  
+  Efficiently deletes all hidden rows in the active worksheet using a bottom-up approach. Features real-time progress tracking, execution time reporting, and optimized performance for large datasets (50,000+ rows). Perfect for cleaning filtered data before analysis or export.
 
-- **`Fill Cell from Above.bas`**  
-  Fills empty cells in a selected range with the value from the cell above. Useful for restoring grouped labels in flattened reports or pivot exports.
-
----
-
-### 📤 Exports
-
-- **`All Excel Table Formula.bas`**  
-  Extracts all formulas used in Excel **ListObject tables**, generating an AI-friendly Markdown document for auditing or automation.
-
-- **`Document All PivotTables (OLAP + Regular) to Markdown with Full MDX and Layout Metadata.bas`**  
-  Scans every PivotTable (OLAP and regular) and creates a rich Markdown report including slicers, layout, data source, and MDX queries where applicable.
-
-- **`Export Pivot Table to Markdown (AI-Friendly).bas`**  
-  Exports the active sheet’s first PivotTable as a clean Markdown table — useful for GitHub, documentation, or LLM tools.
-
-- **`Export Selected Range to Clean CSV.bas`**  
-  Buffered, fast export of a selected Excel range to CSV. Handles large row counts and intelligently sanitizes delimiters and line breaks.
-
-- **`Export Table Metadata.bas`**  
-  Maps every Excel **ListObject table** in the workbook, detailing structure, column types, formulas, sample data, and inferred relationships — written in structured Markdown.
+- **`FillBlanksDown.bas`**  
+  Intelligently fills blank cells in a selected range with values from the cell directly above. Handles merged cells gracefully and provides detailed feedback on cells modified. Essential for cleaning pivot table exports or grouped data where labels are omitted in repeated rows.
 
 ---
 
-### 🧠 Utilities
+### 📊 Exports & Documentation
 
-- **`Extract URL from Hyperlink.bas`**  
-  Custom function (`=URL(A1)`) that extracts the hyperlink address from a cell, useful for audits, exports, or cleaning reports.
+- **`DocumentTableFormulas.bas`**  
+  Creates comprehensive Markdown documentation of all Excel Tables (ListObjects) and their formulas. Categorizes formula types (SUMIFS, VLOOKUP, etc.), detects cross-table references, and exports to `Downloads\Table_Formulas_AI.txt`. Ideal for formula auditing and AI-assisted code generation.
+
+- **`DocumentAllTables.bas`**  
+  Generates detailed metadata documentation for every Excel Table in the workbook. Includes table structure, column data types, sample values, potential relationships, and suggested formulas. Outputs comprehensive Markdown suitable for data dictionaries and technical documentation.
+
+- **`ExportPivotToMarkdown.bas`**  
+  Exports the first PivotTable on the active worksheet to GitHub-compatible Markdown format. Preserves table structure with proper pipe delimiters and escapes special characters. Perfect for documentation, reports, or sharing pivot analysis in markdown-friendly platforms.
+
+- **`ExportRangeToCSV.bas`**  
+  Advanced CSV export tool with intelligent data type detection, configurable text quoting, and buffered writing for optimal performance. Handles 50,000+ rows efficiently while preserving data integrity. Supports custom delimiters and provides detailed export statistics.
+
+- **`GenerateAdvancedPivotReport.bas`**  
+  Creates comprehensive documentation for all PivotTables (both OLAP and regular) in a workbook. Includes field configurations, data sources, OLAP connection details, MDX references, calculated fields, and slicer information. Outputs detailed Markdown reports with complete metadata analysis.
+
+---
+
+### 🔧 Utilities
+
+- **`GetHyperlinkURL.bas`**  
+  Custom Excel function that extracts the actual URL from hyperlinked cells. Use with `=GetHyperlinkURL(A1)` to retrieve hyperlink addresses for link inventories, validation, or export lists. Includes error handling for non-hyperlinked cells and multiple cell selections.
+
+---
+
+## 🆕 Recent Updates
+
+- **Enhanced naming conventions** for better clarity and consistency
+- **Improved error handling** across all macros
+- **Performance optimizations** for large dataset processing
+- **Comprehensive documentation** with usage examples and best practices
+
+---
+
+## 🤝 Contributing
+
+Found a bug or have a suggestion? Feel free to:
+- Open an issue describing the problem or enhancement
+- Submit a pull request with improvements
+- Share your own VBA macros that might benefit the community
+
+When contributing, please:
+- Follow the existing naming conventions
+- Include comprehensive header documentation
+- Test with various Excel versions when possible
+- Update the README with any new macros
 
 ---
 
