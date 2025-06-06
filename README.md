@@ -90,6 +90,7 @@ You will now see the **Developer** tab in the ribbon, which gives access to the 
 
 Each folder groups macros by category:
 
+```text
 Excel-VBA-Toolkit/
 ├── Data Cleaning
 │   ├── Delete Hidden Rows.bas
@@ -103,6 +104,7 @@ Excel-VBA-Toolkit/
 ├── Utilities
 │   └── Extract URL from Hyperlink.bas
 └── README.md
+```
 
 ---
 
