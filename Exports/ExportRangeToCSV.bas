@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: Export Selected Range to CSV (Fast Buffered)
+' 📌 Macro: ExportRangeToCSV
 ' 📁 Module Purpose:
 '     Exports a user-selected Excel range to a clean, analysis-ready `.csv` file.
 '     The macro optimizes for speed, quoting consistency, and large datasets.
@@ -45,7 +45,7 @@
 '     - Extracting time series, cross-tab, or survey data from Excel
 '
 ' ==========================================================================================
-Sub ExportPivotToCSV_FastBuffered()
+Sub ExportRangeToCSV()
     ' Export selected range to CSV with fast buffered writing and smart quoting
 
     Const QUOTE_NONE As Integer = 3
