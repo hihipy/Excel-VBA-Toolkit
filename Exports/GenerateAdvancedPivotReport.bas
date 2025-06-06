@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: Generate Markdown Report of All Excel Table Formulas
+' 📌 Macro: GenerateAdvancedPivotReport
 ' 📁 Module Purpose:
 '     Scans all Excel tables (ListObjects) in a workbook, generating a Markdown-formatted
 '     documentation file. The output includes table structure, cell locations, formulas,
@@ -63,7 +63,7 @@ Private Const MD_CALC_FIELD_SEPARATOR As String = "|------|---------|"
 '==================================================================================================
 '  MAIN PROCEDURE
 '==================================================================================================
-Public Sub GenerateAdvancedPivotTableReport()
+Public Sub GenerateAdvancedPivotReport()
     Const INCLUDE_PIVOT_LAYOUT_DETAILS As Boolean = True
     Const INCLUDE_SLICERS As Boolean = True
     Const INCLUDE_CALCULATED_FIELDS As Boolean = True
