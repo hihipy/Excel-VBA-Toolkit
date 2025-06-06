@@ -90,15 +90,59 @@ You will now see the **Developer** tab in the ribbon, which gives access to the 
 
 Each folder groups macros by category:
 
-```
 Excel-VBA-Toolkit/
-├── DataCleaning/
-│   └── DeleteHiddenRows.bas
-├── Exports/
-│   └── ExportPivotToMarkdown.bas
-├── Utilities/
-│   └── ExtractHyperlinkURL.bas
-```
+├── Data Cleaning
+│   ├── Delete Hidden Rows.bas
+│   └── Fill Cell from Above.bas
+├── Exports
+│   ├── All Excel Table Formula.bas
+│   ├── Document All PivotTables (OLAP + Regular) to Markdown with Full MDX and Layout Metadata.bas
+│   ├── Export Pivot Table to Markdown (AI-Friendly).bas
+│   ├── Export Selected Range to Clean CSV.bas
+│   └── Export Table Metadata.bas
+├── Utilities
+│   └── Extract URL from Hyperlink.bas
+└── README.md
+
+---
+
+## 📌 Macro Descriptions
+
+Brief summaries of what each `.bas` file in the toolkit does:
+
+### 🔄 Data Cleaning
+
+- **`Delete Hidden Rows.bas`**  
+  Deletes all rows hidden by filters across all visible sheets. Ideal for prepping data before export or transformation.
+
+- **`Fill Cell from Above.bas`**  
+  Fills empty cells in a selected range with the value from the cell above. Useful for restoring grouped labels in flattened reports or pivot exports.
+
+---
+
+### 📤 Exports
+
+- **`All Excel Table Formula.bas`**  
+  Extracts all formulas used in Excel **ListObject tables**, generating an AI-friendly Markdown document for auditing or automation.
+
+- **`Document All PivotTables (OLAP + Regular) to Markdown with Full MDX and Layout Metadata.bas`**  
+  Scans every PivotTable (OLAP and regular) and creates a rich Markdown report including slicers, layout, data source, and MDX queries where applicable.
+
+- **`Export Pivot Table to Markdown (AI-Friendly).bas`**  
+  Exports the active sheet’s first PivotTable as a clean Markdown table — useful for GitHub, documentation, or LLM tools.
+
+- **`Export Selected Range to Clean CSV.bas`**  
+  Buffered, fast export of a selected Excel range to CSV. Handles large row counts and intelligently sanitizes delimiters and line breaks.
+
+- **`Export Table Metadata.bas`**  
+  Maps every Excel **ListObject table** in the workbook, detailing structure, column types, formulas, sample data, and inferred relationships — written in structured Markdown.
+
+---
+
+### 🧠 Utilities
+
+- **`Extract URL from Hyperlink.bas`**  
+  Custom function (`=URL(A1)`) that extracts the hyperlink address from a cell, useful for audits, exports, or cleaning reports.
 
 ---
 
