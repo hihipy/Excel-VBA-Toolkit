@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: Delete Hidden Rows (Bottom-Up)
+' 📌 Macro: DeleteAllHiddenRows_BottomUp
 ' 📁 Module Purpose:
 '     Deletes all hidden rows in the active worksheet, working from bottom to top.
 '     Optimized for large datasets with visual progress feedback and execution time tracking.
@@ -27,7 +27,7 @@
 '
 ' ==========================================================================================
 
-Sub sbVBS_To_Delete_Hidden_Rows()
+Sub DeleteAllHiddenRows_BottomUp()
     ' Deletes hidden rows in the active sheet
     Dim lastRow As Long, iCntr As Long
     Dim ws As Worksheet
