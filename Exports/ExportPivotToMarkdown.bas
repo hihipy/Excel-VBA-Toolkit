@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: Export Pivot Table to Markdown
+' 📌 Macro: ExportPivotToMarkdown
 ' 📁 Module Purpose:
 '     Exports the first PivotTable on the active worksheet to a GitHub-friendly Markdown (.md)
 '     file. Output preserves header structure and table alignment with pipe (`|`) delimiters.
@@ -27,7 +27,7 @@
 '     - Output is compatible with GitHub, Obsidian, Notion, and Markdown preview tools
 '
 ' ==========================================================================================
-Sub ExportPivotTableToMarkdown()
+Sub ExportPivotToMarkdown()
     ' Export the first pivot table on the active sheet to a GitHub-compatible markdown file
 
     Dim ws As Worksheet
