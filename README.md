@@ -88,21 +88,16 @@ You will now see the **Developer** tab in the ribbon, which gives access to the 
 
 ## 📁 Repository Structure
 
-Each folder groups macros by category:
+Each folder groups macros by category. Below is a representative structure (not exhaustive):
 
 ```text
 Excel-VBA-Toolkit/
-├── Data Cleaning
-│   ├── Delete Hidden Rows.bas
-│   └── Fill Cell from Above.bas
-├── Exports
-│   ├── All Excel Table Formula.bas
-│   ├── Document All PivotTables (OLAP + Regular) to Markdown with Full MDX and Layout Metadata.bas
-│   ├── Export Pivot Table to Markdown (AI-Friendly).bas
-│   ├── Export Selected Range to Clean CSV.bas
-│   └── Export Table Metadata.bas
-├── Utilities
-│   └── Extract URL from Hyperlink.bas
+├── Data Cleaning/
+│   └── [e.g. Delete Hidden Rows.bas, Fill Cell from Above.bas]
+├── Exports/
+│   └── [e.g. Export Pivot Table to Markdown.bas, Export Range to CSV.bas]
+├── Utilities/
+│   └── [e.g. Extract URL from Hyperlink.bas]
 └── README.md
 ```
 
