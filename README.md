@@ -1,4 +1,4 @@
-# 📘 Excel VBA Macro Toolkit (`.bas` Modules)
+# 📘 Excel-VBA-Toolkit (`.bas` Modules)
 
 This repository contains a curated set of Excel VBA macros, organized as `.bas` code modules for easy reuse and import into any Excel workbook.
 
@@ -146,30 +146,6 @@ Detailed summaries of what each `.bas` file in the toolkit does:
 
 - **`GetHyperlinkURL.bas`**  
   Custom Excel function that extracts the actual URL from hyperlinked cells. Use with `=GetHyperlinkURL(A1)` to retrieve hyperlink addresses for link inventories, validation, or export lists. Includes error handling for non-hyperlinked cells and multiple cell selections.
-
----
-
-## 🆕 Recent Updates
-
-- **Enhanced naming conventions** for better clarity and consistency
-- **Improved error handling** across all macros
-- **Performance optimizations** for large dataset processing
-- **Comprehensive documentation** with usage examples and best practices
-
----
-
-## 🤝 Contributing
-
-Found a bug or have a suggestion? Feel free to:
-- Open an issue describing the problem or enhancement
-- Submit a pull request with improvements
-- Share your own VBA macros that might benefit the community
-
-When contributing, please:
-- Follow the existing naming conventions
-- Include comprehensive header documentation
-- Test with various Excel versions when possible
-- Update the README with any new macros
 
 ---
 
