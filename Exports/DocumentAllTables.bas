@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: DocumentAllTables
+' 📌 Macro: DocumentAllTables - AI-READY VERSION
 ' 📁 Module Purpose:
 '     Creates comprehensive, AI-optimized documentation of **all Excel Tables (ListObjects)**
 '     across every worksheet in the workbook. Designed specifically for feeding to AI models
@@ -9,7 +9,7 @@
 ' ✅ Key Features:
 '     - Scans every worksheet and every table (ListObject) in the workbook
 '     - AI-optimized output with enhanced metadata including:
-'         • Table name, range, data dimensions, and business purpose
+'         • Table name, range, data dimensions, and structural properties
 '         • Column definitions with actual Excel data types and sample values
 '         • Data quality flags (CLEAN, WARNING, ERROR) for each field
 '         • Cross-table relationship mapping with specific join recommendations
@@ -34,8 +34,8 @@
 '     - Worksheet: FY2025_Proposals
 '     - Range: A1:Z1500
 '     - Rows: 1,499 data rows
+'     - Columns: 41
 '     - Size: Large
-'     - Purpose: Grant/Proposal tracking
 '     
 '     ## COLUMNS FOR AI CODING
 '     | # | Column Name | Data Type | Sample Values | Quality | AI Notes |
@@ -145,7 +145,6 @@ Sub DocumentAllTables()
             Print #fileNum, "- **Rows**: " & Format(GetRowCount(tbl), "#,##0") & " data rows"
             Print #fileNum, "- **Columns**: " & tbl.ListColumns.Count
             Print #fileNum, "- **Size**: " & GetSizeCategory(GetRowCount(tbl))
-            Print #fileNum, "- **Purpose**: " & GetTablePurpose(tbl.Name, ws.Name)
             Print #fileNum, ""
 
             ' Enhanced column info
