@@ -88,7 +88,7 @@ Excel-VBA-Toolkit/
 │   ├── ExportPivotToMarkdown.bas
 │   ├── ExportRangeToCSV.bas
 │   ├── GenerateAdvancedPivotReport.bas
-│   └── GenerateAIReadyExcelTableDoc.bas
+│   └── GenerateUniversalAITableDoc.bas
 ├── Utilities/
 │   └── GetHyperlinkURL.bas
 └── README.md
@@ -120,8 +120,8 @@ Advanced CSV export tool with intelligent data type detection, configurable text
 #### **GenerateAdvancedPivotReport.bas**
 Creates comprehensive documentation for all PivotTables (both OLAP and regular) in a workbook. Includes field configurations, data sources, OLAP connection details, MDX references, calculated fields, and slicer information. Outputs detailed Markdown reports with complete metadata analysis.
 
-#### **GenerateAIReadyExcelTableDoc.bas**
-Creates enterprise-grade, AI-optimized documentation of all Excel Tables across every worksheet in the workbook. Features robust data profiling with intelligent data type detection, sample values, complete formula transparency with exact syntax and dependency mapping, comprehensive data quality assessment (CLEAN/WARNING/ERROR flags), data pattern recognition and validation constraints, cross-table relationship mapping with specific join recommendations, and performance optimization guidance. Generates clean, text-only Markdown output specifically designed for feeding to AI tools for advanced Excel analysis, formula generation, and automated data manipulation. Universal compatibility across all industries (financial, healthcare, manufacturing, retail) with scalable performance for datasets from 100 to 100,000+ rows. Essential for creating professional data dictionaries and enabling sophisticated AI-assisted coding workflows.
+#### **GenerateUniversalAITableDoc.bas**
+Creates enterprise-grade, AI-optimized documentation of all Excel Tables across every worksheet in the workbook. Features robust data profiling with intelligent data type detection, sample values, complete formula transparency with exact syntax and dependency mapping, comprehensive data quality assessment (CLEAN/WARNING/ERROR flags), and performance optimization guidance. Generates clean, text-only Markdown output specifically designed for feeding to AI tools for advanced Excel analysis, formula generation, and automated data manipulation. Universal compatibility across all industries (financial, healthcare, manufacturing, retail) with scalable performance for datasets from 100 to 100,000+ rows. Zero business logic assumptions - provides pure structural analysis suitable for any Excel table structure. Essential for creating professional data dictionaries and enabling sophisticated AI-assisted coding workflows.
 
 ### 🔧 Utilities
 
