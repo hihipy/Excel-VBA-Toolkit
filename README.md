@@ -116,7 +116,7 @@ Ultra-high-performance toolkit for detecting and fixing whitespace issues across
 Creates comprehensive Markdown documentation of all Excel Tables (ListObjects) and their formulas. Categorizes formula types (SUMIFS, VLOOKUP, etc.), detects cross-table references, and exports to Downloads\Table_Formulas_AI.txt. Ideal for formula auditing and AI-assisted code generation.
 
 #### **DocumentAllTables.bas**
-Generates detailed metadata documentation for every Excel Table in the workbook. Includes table structure, column data types, sample values, potential relationships, and suggested formulas. Outputs comprehensive Markdown suitable for data dictionaries and technical documentation.
+Creates comprehensive, AI-optimized documentation of all Excel Tables across every worksheet in the workbook. Features enhanced data profiling with actual Excel data types, sample values, data quality assessment (CLEAN/WARNING/ERROR flags), cross-table relationship mapping, and ready-to-use formula examples. Generates clean, text-only Markdown output specifically designed for feeding to AI tools for advanced Excel analysis, formula generation, and automated data manipulation. Essential for creating actionable data dictionaries and enabling AI-assisted coding workflows.
 
 #### **ExportPivotToMarkdown.bas**
 Exports the first PivotTable on the active worksheet to GitHub-compatible Markdown format. Preserves table structure with proper pipe delimiters and escapes special characters. Perfect for documentation, reports, or sharing pivot analysis in markdown-friendly platforms.
