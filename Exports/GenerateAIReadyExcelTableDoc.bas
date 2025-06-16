@@ -1,5 +1,5 @@
 ' ==========================================================================================
-' 📌 Macro: DocumentAllTables - AI-READY VERSION
+' 📌 Macro: GenerateAIReadyExcelTableDoc
 ' 📁 Module Purpose:
 '     Creates comprehensive, AI-optimized documentation of **all Excel Tables (ListObjects)**
 '     across every worksheet in the workbook. Designed specifically for feeding to AI models
@@ -62,7 +62,7 @@
 '
 ' ==========================================================================================
 
-Sub DocumentAllTables()
+Sub GenerateAIReadyExcelTableDoc()
     ' Simplified but enhanced documentation focused on AI coding assistance
     
     Dim wbToScan As Workbook
@@ -180,6 +180,17 @@ Sub DocumentAllTables()
             Print #fileNum, ""
 
             ' Data quality summary
+            ' Data patterns and constraints
+            Print #fileNum, "## DATA PATTERNS & CONSTRAINTS"
+            Dim patterns As String
+            patterns = GetDataPatterns(tbl)
+            If patterns <> "" Then
+                Print #fileNum, patterns
+            Else
+                Print #fileNum, "- No specific data patterns detected"
+            End If
+            Print #fileNum, ""
+
             ' Data quality summary with explicit text formatting
             Print #fileNum, "## DATA QUALITY FOR AI"
             Dim qualityIssues As String
@@ -209,30 +220,21 @@ Sub DocumentAllTables()
             End If
             Print #fileNum, ""
 
-            ' Ready-to-use formulas
-            Print #fileNum, "## READY-TO-USE FORMULAS"
-            Print #fileNum, "```excel"
-            Print #fileNum, "' Basic table reference:"
-            Print #fileNum, "=" & tbl.Name & "[ColumnName]"
-            Print #fileNum, ""
-            Print #fileNum, "' Lookup examples:"
-            Dim lookupCol As String
-            lookupCol = GetBestLookupColumn(tbl)
-            Print #fileNum, "=XLOOKUP(search_value, " & tbl.Name & "[" & lookupCol & "], " & tbl.Name & "[return_column])"
-            Print #fileNum, "=INDEX(" & tbl.Name & "[return_column], MATCH(search_value, " & tbl.Name & "[" & lookupCol & "], 0))"
-            Print #fileNum, ""
-            
-            ' Add specific formulas based on data types
-            Dim numericCol As String
-            numericCol = GetFirstNumericColumn(tbl)
-            If numericCol <> "" Then
-                Print #fileNum, "' Aggregation examples:"
-                Print #fileNum, "=SUM(" & tbl.Name & "[" & numericCol & "])"
-                Print #fileNum, "=SUMIFS(" & tbl.Name & "[" & numericCol & "], " & tbl.Name & "[criteria_column], criteria)"
-                Print #fileNum, "=AVERAGEIFS(" & tbl.Name & "[" & numericCol & "], " & tbl.Name & "[criteria_column], criteria)"
+            ' Formula dependencies if any formulas exist
+            Dim formulaDeps As String
+            formulaDeps = GetFormulaDependencies(tbl)
+            If formulaDeps <> "" Then
+                Print #fileNum, "## FORMULA DEPENDENCIES"
+                Print #fileNum, formulaDeps
+                Print #fileNum, ""
             End If
-            Print #fileNum, "```"
+
+            ' Performance considerations
+            Print #fileNum, "## PERFORMANCE CONSIDERATIONS"
+            Print #fileNum, GetPerformanceNotes(tbl)
             Print #fileNum, ""
+
+
             Print #fileNum, "---"
             Print #fileNum, ""
         Next tbl
@@ -285,7 +287,7 @@ End Sub
 ' ==========================================================================================
 
 Function GetRealDataType(col As ListColumn) As String
-    ' Get actual Excel data type, not guessed
+    ' Robust data type detection for any Excel table data
     On Error Resume Next
     
     If col.DataBodyRange Is Nothing Then
@@ -296,26 +298,49 @@ Function GetRealDataType(col As ListColumn) As String
     Dim firstCell As Range
     Set firstCell = col.DataBodyRange.Cells(1, 1)
     
-    ' Check Excel's actual formatting first
-    Dim numFormat As String
-    numFormat = firstCell.NumberFormat
+    ' Check if this is a formula column first
+    If firstCell.HasFormula Then
+        GetRealDataType = "Formula"
+        Exit Function
+    End If
     
-    If InStr(numFormat, "$") > 0 Or InStr(LCase(numFormat), "currency") > 0 Then
-        GetRealDataType = "Currency"
-    ElseIf InStr(numFormat, "%") > 0 Then
-        GetRealDataType = "Percentage"
-    ElseIf InStr(numFormat, "m/d/yyyy") > 0 Or InStr(numFormat, "mm/dd/yyyy") > 0 Then
-        GetRealDataType = "Date"
-    ElseIf numFormat = "General" Then
-        ' For General format, check the actual content
-        If IsEmpty(firstCell.Value) Then
-            GetRealDataType = "Empty"
-        ElseIf IsNumeric(firstCell.Value) Then
-            GetRealDataType = "Number"
-        ElseIf IsDate(firstCell.Value) Then
-            GetRealDataType = "Date"
+    ' Sample multiple cells for better accuracy
+    Dim sampleSize As Long
+    sampleSize = Application.WorksheetFunction.Min(10, col.DataBodyRange.Rows.Count)
+    
+    Dim numericCount As Long, dateCount As Long, textCount As Long, emptyCount As Long
+    Dim i As Long
+    
+    For i = 1 To sampleSize
+        Dim cellValue As Variant
+        cellValue = col.DataBodyRange.Cells(i, 1).Value
+        
+        If IsEmpty(cellValue) Or cellValue = "" Then
+            emptyCount = emptyCount + 1
+        ElseIf IsDate(cellValue) Then
+            dateCount = dateCount + 1
+        ElseIf IsNumeric(cellValue) And Not IsDate(cellValue) Then
+            numericCount = numericCount + 1
         Else
-            GetRealDataType = "Text"
+            textCount = textCount + 1
+        End If
+    Next i
+    
+    ' Determine type based on majority
+    If emptyCount = sampleSize Then
+        GetRealDataType = "Empty"
+    ElseIf dateCount > (sampleSize / 2) Then
+        GetRealDataType = "Date"
+    ElseIf numericCount > (sampleSize / 2) Then
+        ' Check number formatting for more specific types
+        Dim numFormat As String
+        numFormat = firstCell.NumberFormat
+        If InStr(numFormat, "$") > 0 Or InStr(LCase(numFormat), "currency") > 0 Then
+            GetRealDataType = "Currency"
+        ElseIf InStr(numFormat, "%") > 0 Then
+            GetRealDataType = "Percentage"
+        Else
+            GetRealDataType = "Number"
         End If
     Else
         GetRealDataType = "Text"
@@ -403,25 +428,292 @@ Function GetQualityFlag(col As ListColumn) As String
 End Function
 
 Function GetAICodeNotes(col As ListColumn, dataType As String) As String
-    ' AI-specific coding notes
+    ' Robust AI-specific coding notes for any data type
     Dim colName As String
     colName = LCase(col.Name)
     
-    If InStr(colName, "id") > 0 Then
+    ' If it's a formula column, provide formula info
+    If dataType = "Formula" Then
+        Dim formulaCategory As String
+        formulaCategory = GetFormulaCategory(col)
+        GetAICodeNotes = "Formula field: " & formulaCategory
+        Exit Function
+    End If
+    
+    ' Enhanced pattern matching for various data types
+    If InStr(colName, "id") > 0 And Len(colName) > 2 Then
         GetAICodeNotes = "Use for lookups/joins"
-    ElseIf InStr(colName, "date") > 0 Then
+    ElseIf InStr(colName, "key") > 0 Or InStr(colName, "code") > 0 Then
+        GetAICodeNotes = "Use for lookups/joins"
+    ElseIf InStr(colName, "date") > 0 Or InStr(colName, "time") > 0 Then
         GetAICodeNotes = "Check for placeholders"
-    ElseIf InStr(colName, "amount") > 0 Or InStr(colName, "total") > 0 Then
+    ElseIf InStr(colName, "amount") > 0 Or InStr(colName, "total") > 0 Or InStr(colName, "sum") > 0 Then
         GetAICodeNotes = "Sum/aggregate candidate"
-    ElseIf InStr(colName, "status") > 0 Then
+    ElseIf InStr(colName, "count") > 0 Or InStr(colName, "number") > 0 Or InStr(colName, "qty") > 0 Then
+        GetAICodeNotes = "Count/aggregate candidate"
+    ElseIf InStr(colName, "status") > 0 Or InStr(colName, "state") > 0 Or InStr(colName, "flag") > 0 Then
         GetAICodeNotes = "Filter/group candidate"
-    ElseIf InStr(colName, "name") > 0 Then
+    ElseIf InStr(colName, "name") > 0 Or InStr(colName, "title") > 0 Or InStr(colName, "description") > 0 Then
         GetAICodeNotes = "Text lookup/display"
+    ElseIf InStr(colName, "email") > 0 Or InStr(colName, "phone") > 0 Or InStr(colName, "address") > 0 Then
+        GetAICodeNotes = "Contact information"
+    ElseIf InStr(colName, "percent") > 0 Or InStr(colName, "rate") > 0 Or dataType = "Percentage" Then
+        GetAICodeNotes = "Percentage/ratio analysis"
+    ElseIf dataType = "Currency" Then
+        GetAICodeNotes = "Financial calculations"
+    ElseIf dataType = "Date" Then
+        GetAICodeNotes = "Date calculations/filtering"
     ElseIf dataType = "Number" Then
         GetAICodeNotes = "Calculate/analyze"
+    ElseIf dataType = "Empty" Then
+        GetAICodeNotes = "Empty column - consider removing"
     Else
         GetAICodeNotes = "Category/filter"
     End If
+End Function
+
+Function GetFormulaCategory(col As ListColumn) As String
+    ' Categorize formula types and show actual formula for AI understanding
+    On Error Resume Next
+    
+    If col.DataBodyRange Is Nothing Then
+        GetFormulaCategory = "No data"
+        Exit Function
+    End If
+    
+    Dim firstCell As Range
+    Set firstCell = col.DataBodyRange.Cells(1, 1)
+    
+    If Not firstCell.HasFormula Then
+        GetFormulaCategory = "Not a formula"
+        Exit Function
+    End If
+    
+    Dim formulaText As String
+    formulaText = firstCell.Formula
+    Dim formulaUpper As String
+    formulaUpper = UCase(formulaText)
+    
+    Dim category As String
+    
+    ' Categorize based on formula content
+    If InStr(formulaUpper, "SUMIFS") > 0 Then
+        category = "Aggregation (SUMIFS)"
+    ElseIf InStr(formulaUpper, "SUM") > 0 Then
+        category = "Aggregation (SUM)"
+    ElseIf InStr(formulaUpper, "AVERAGE") > 0 Then
+        category = "Aggregation (AVERAGE)"
+    ElseIf InStr(formulaUpper, "COUNT") > 0 Then
+        category = "Aggregation (COUNT)"
+    ElseIf InStr(formulaUpper, "XLOOKUP") > 0 Then
+        category = "Lookup (XLOOKUP)"
+    ElseIf InStr(formulaUpper, "VLOOKUP") > 0 Then
+        category = "Lookup (VLOOKUP)"
+    ElseIf InStr(formulaUpper, "INDEX") > 0 And InStr(formulaUpper, "MATCH") > 0 Then
+        category = "Lookup (INDEX/MATCH)"
+    ElseIf InStr(formulaUpper, "IF(") > 0 Then
+        category = "Conditional (IF)"
+    ElseIf InStr(formulaUpper, "IFERROR") > 0 Then
+        category = "Error Handling (IFERROR)"
+    Else
+        category = "Other calculation"
+    End If
+    
+    ' Check for cross-table references
+    Dim ws As Worksheet
+    Dim tbl As ListObject
+    For Each ws In col.Parent.Parent.Worksheets
+        For Each tbl In ws.ListObjects
+            If tbl.Name <> col.Parent.Name Then
+                If InStr(formulaUpper, UCase(tbl.Name & "[")) > 0 Then
+                    category = category & " (Refs " & tbl.Name & ")"
+                    Exit For
+                End If
+            End If
+        Next tbl
+    Next ws
+    
+    ' Include complete formula for AI analysis
+    GetFormulaCategory = category & " | Formula: " & formulaText
+    
+    On Error GoTo 0
+End Function
+
+Function GetDataPatterns(tbl As ListObject) As String
+    ' Analyze data patterns and constraints for AI understanding
+    Dim patterns As String
+    Dim col As ListColumn
+    
+    For Each col In tbl.ListColumns
+        Dim colName As String
+        colName = col.Name
+        Dim pattern As String
+        pattern = AnalyzeColumnPattern(col)
+        
+        If pattern <> "" Then
+            patterns = patterns & "- **" & colName & "**: " & pattern & vbNewLine
+        End If
+    Next col
+    
+    GetDataPatterns = patterns
+End Function
+
+Function AnalyzeColumnPattern(col As ListColumn) As String
+    ' Analyze specific column patterns
+    On Error Resume Next
+    
+    If col.DataBodyRange Is Nothing Then Exit Function
+    
+    Dim colName As String
+    colName = LCase(col.Name)
+    
+    ' Sample first few non-empty values
+    Dim sampleValues As String
+    Dim i As Long, sampleCount As Long
+    
+    For i = 1 To Application.WorksheetFunction.Min(5, col.DataBodyRange.Rows.Count)
+        Dim cellValue As String
+        cellValue = CStr(col.DataBodyRange.Cells(i, 1).Value)
+        
+        If cellValue <> "" And cellValue <> "null" Then
+            If sampleCount = 0 Then sampleValues = cellValue
+            sampleCount = sampleCount + 1
+            If sampleCount >= 3 Then Exit For
+        End If
+    Next i
+    
+    If sampleValues = "" Then Exit Function
+    
+    ' Pattern detection based on column name and sample data
+    If InStr(colName, "id") > 0 And InStr(colName, "pi") > 0 Then
+        If Left(sampleValues, 1) = "C" And Len(sampleValues) >= 8 Then
+            AnalyzeColumnPattern = "Format C######## (letter C + 8+ digits)"
+        End If
+    ElseIf InStr(colName, "fiscal") > 0 Or InStr(colName, "fy") > 0 Then
+        If Left(sampleValues, 2) = "FY" Then
+            AnalyzeColumnPattern = "Format FY#### (e.g., FY2025, FY2026)"
+        End If
+    ElseIf InStr(colName, "email") > 0 Then
+        If InStr(sampleValues, "@") > 0 Then
+            AnalyzeColumnPattern = "Valid email format required"
+        End If
+    ElseIf InStr(colName, "employee") > 0 And InStr(colName, "id") > 0 Then
+        If IsNumeric(sampleValues) And Len(sampleValues) >= 8 Then
+            AnalyzeColumnPattern = "8+ digit employee identifier"
+        End If
+    ElseIf InStr(colName, "total") > 0 Or InStr(colName, "amount") > 0 Then
+        If IsNumeric(sampleValues) Then
+            AnalyzeColumnPattern = "Numeric values, stored as text"
+        End If
+    ElseIf InStr(colName, "sponsor") > 0 And InStr(colName, "id") > 0 Then
+        If Left(sampleValues, 4) = "SPN-" Then
+            AnalyzeColumnPattern = "Format SPN-##### (sponsor prefix + number)"
+        End If
+    End If
+    
+    On Error GoTo 0
+End Function
+
+Function GetFormulaDependencies(tbl As ListObject) As String
+    ' Map formula dependencies for AI understanding
+    Dim dependencies As String
+    Dim col As ListColumn
+    
+    For Each col In tbl.ListColumns
+        If GetRealDataType(col) = "Formula" Then
+            Dim deps As String
+            deps = AnalyzeFormulaDependencies(col, tbl)
+            If deps <> "" Then
+                dependencies = dependencies & "- **" & tbl.Name & "[" & col.Name & "]** -> " & deps & vbNewLine
+            End If
+        End If
+    Next col
+    
+    GetFormulaDependencies = dependencies
+End Function
+
+Function AnalyzeFormulaDependencies(col As ListColumn, tbl As ListObject) As String
+    ' Analyze what a formula depends on
+    On Error Resume Next
+    
+    If col.DataBodyRange Is Nothing Then Exit Function
+    If Not col.DataBodyRange.Cells(1, 1).HasFormula Then Exit Function
+    
+    Dim formulaText As String
+    formulaText = UCase(col.DataBodyRange.Cells(1, 1).Formula)
+    
+    Dim dependencies As String
+    
+    ' Check for references to other tables
+    Dim ws As Worksheet
+    Dim otherTbl As ListObject
+    For Each ws In tbl.Parent.Worksheets
+        For Each otherTbl In ws.ListObjects
+            If otherTbl.Name <> tbl.Name Then
+                If InStr(formulaText, UCase(otherTbl.Name & "[")) > 0 Then
+                    dependencies = dependencies & "Depends on **" & otherTbl.Name & "** table, "
+                End If
+            End If
+        Next otherTbl
+    Next ws
+    
+    ' Check for references to other columns in same table
+    Dim otherCol As ListColumn
+    For Each otherCol In tbl.ListColumns
+        If otherCol.Name <> col.Name Then
+            If InStr(formulaText, UCase("[@[" & otherCol.Name & "]]")) > 0 Then
+                dependencies = dependencies & "Uses **" & otherCol.Name & "** column, "
+            End If
+        End If
+    Next otherCol
+    
+    ' Clean up trailing comma
+    If Right(dependencies, 2) = ", " Then
+        dependencies = Left(dependencies, Len(dependencies) - 2)
+    End If
+    
+    AnalyzeFormulaDependencies = dependencies
+    
+    On Error GoTo 0
+End Function
+
+Function GetPerformanceNotes(tbl As ListObject) As String
+    ' Generate performance considerations for AI
+    Dim notes As String
+    Dim rowCount As Long
+    rowCount = GetRowCount(tbl)
+    
+    ' Size-based recommendations
+    If rowCount > 10000 Then
+        notes = notes & "- **Large dataset** (" & Format(rowCount, "#,##0") & " rows) - use structured references for optimal performance" & vbNewLine
+        notes = notes & "- **Bulk operations** - consider disabling calculation during large edits" & vbNewLine
+    ElseIf rowCount > 1000 Then
+        notes = notes & "- **Medium dataset** (" & Format(rowCount, "#,##0") & " rows) - structured references recommended" & vbNewLine
+    Else
+        notes = notes & "- **Small dataset** (" & Format(rowCount, "#,##0") & " rows) - standard Excel functions work efficiently" & vbNewLine
+    End If
+    
+    ' Formula-based recommendations
+    Dim formulaCount As Long
+    Dim col As ListColumn
+    For Each col In tbl.ListColumns
+        If GetRealDataType(col) = "Formula" Then
+            formulaCount = formulaCount + 1
+        End If
+    Next col
+    
+    If formulaCount > 0 Then
+        notes = notes & "- **Formula columns present** (" & formulaCount & ") - these recalculate automatically with data changes" & vbNewLine
+        notes = notes & "- **Cross-table lookups** detected - consider INDEX/MATCH over VLOOKUP for better performance" & vbNewLine
+    End If
+    
+    ' Memory considerations for very large datasets
+    If rowCount > 50000 Then
+        notes = notes & "- **Very large dataset** - consider Power Query for complex transformations" & vbNewLine
+        notes = notes & "- **Memory usage** - limit simultaneous calculations on multiple large tables" & vbNewLine
+    End If
+    
+    GetPerformanceNotes = notes
 End Function
 
 Function GetKeyFields(tbl As ListObject) As String
@@ -571,22 +863,6 @@ Function AnalyzeSimpleRelationships(wb As Workbook) As String
     relationships = relationships & "- **Use IFERROR() wrapper**: For lookups that may not find matches" & vbNewLine
     
     AnalyzeSimpleRelationships = relationships
-End Function
-
-Function GetTablePurpose(tableName As String, wsName As String) As String
-    ' Infer table purpose
-    Dim combined As String
-    combined = LCase(tableName & " " & wsName)
-    
-    If InStr(combined, "proposal") > 0 Then
-        GetTablePurpose = "Grant/Proposal tracking"
-    ElseIf InStr(combined, "member") > 0 Then
-        GetTablePurpose = "Membership directory"
-    ElseIf InStr(combined, "award") > 0 Then
-        GetTablePurpose = "Award management"
-    Else
-        GetTablePurpose = "Data table"
-    End If
 End Function
 
 Function GetSizeCategory(rowCount As Long) As String
