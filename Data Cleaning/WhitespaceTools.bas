@@ -4,15 +4,17 @@
 '     An optimized collection of macros to detect, highlight, and FIX various whitespace
 '     issues across ALL SHEETS in the entire workbook. Maximum performance implementation
 '     using advanced memory optimization, bulk operations, and minimal Excel object calls.
+'     NOW WITH DETAILED CELL-BY-CELL REPORTING!
 '
 ' ------------------------------------------------------------------------------------------
 ' ✅ Key Features & Enhancements:
-'     - DetectAllWhitespaceIssues_AllSheets_Fast: Ultra-efficient single-pass processing
-'       that detects AND highlights in one loop for maximum speed on large datasets.
+'     - DetectAllWhitespaceIssues_AllSheets_WithDetailedReport: Ultra-efficient single-pass 
+'       processing that detects, highlights, AND provides detailed cell-by-cell reports.
 '     - RemoveAllWhitespaceIssues_AllSheets_Fast: Bulk cleaning operations across all
 '       sheets with optimized memory management and minimal object model calls.
 '     - ClearAllHighlighting_AllSheets_Fast: Instant formatting removal from all sheets.
 '     - Advanced performance optimizations: 50-80% faster than previous versions.
+'     - Detailed reporting shows exact cell addresses and content with visible whitespace.
 '
 ' ------------------------------------------------------------------------------------------
 ' 🔍 Code Behavior Overview:
@@ -22,6 +24,7 @@
 '     - All logic performed on in-memory arrays with bulk Excel operations at the end.
 '     - Advanced Excel settings management (calculations, screen updates, events disabled).
 '     - Comprehensive error handling with proper settings restoration.
+'     - NEW: Shows exact cell locations and content for every whitespace issue found.
 '
 ' ------------------------------------------------------------------------------------------
 ' 🛠️ Notes:
@@ -31,19 +34,20 @@
 '     - Memory-optimized for large datasets with minimal Excel object model overhead.
 '     - All macros include comprehensive reporting and robust error handling.
 '     - Confirmation prompts included before any data modifications for safety.
+'     - NEW: Detailed reports show spaces as "·" for easy identification.
 '
 ' ==========================================================================================
 
 Option Explicit
 
 '==================================================================================================
-'  ULTRA-EFFICIENT ALL-SHEETS MACROS
+'  ULTRA-EFFICIENT ALL-SHEETS MACROS WITH ENHANCED REPORTING
 '==================================================================================================
 
-Sub DetectAllWhitespaceIssues_AllSheets_Fast()
+Sub DetectAllWhitespaceIssues_AllSheets_WithDetailedReport()
     '==========================================================================
-    ' PURPOSE: Ultra-fast comprehensive whitespace detection across ALL sheets
-    ' OPTIMIZATIONS: Single-pass processing, bulk highlighting, minimal object calls
+    ' PURPOSE: Ultra-fast comprehensive whitespace detection with detailed cell-by-cell report
+    ' ENHANCEMENT: Shows exact cell addresses and content for each whitespace issue
     '==========================================================================
     
     On Error GoTo ErrorHandler
@@ -65,6 +69,15 @@ Sub DetectAllWhitespaceIssues_AllSheets_Fast()
     Dim workbookLeading As Long, workbookTrailing As Long, workbookMultiple As Long
     Dim workbookTotalIssues As Long, workbookTotalCells As Long
     
+    ' Detailed reporting variables
+    Dim detailedReport As String
+    Dim sheetReport As String
+    Dim cellAddress As String
+    Dim issueType As String
+    Dim displayText As String
+    Dim maxReportLength As Long
+    Dim reportTruncated As Boolean
+    
     ' Results tracking
     Dim sheetResults As String
     Dim skippedSheets As String
@@ -75,6 +88,7 @@ Sub DetectAllWhitespaceIssues_AllSheets_Fast()
     Dim origEvents As Boolean
     
     startTime = Timer
+    maxReportLength = 30000 ' Limit report size to prevent overwhelming message boxes
     
     ' --- MAXIMIZE PERFORMANCE ---
     origCalc = Application.Calculation
@@ -85,11 +99,15 @@ Sub DetectAllWhitespaceIssues_AllSheets_Fast()
     Application.ScreenUpdating = False
     Application.EnableEvents = False
     
+    ' Initialize detailed report
+    detailedReport = "📍 DETAILED WHITESPACE ISSUE REPORT" & vbNewLine & String(50, "=") & vbNewLine & vbNewLine
+    
     ' --- Process each worksheet with optimized approach ---
     For Each ws In ThisWorkbook.Worksheets
         
         ' Reset counters for this sheet
         leadingCount = 0: trailingCount = 0: multipleCount = 0: totalIssues = 0
+        sheetReport = ""
         
         ' Skip problematic sheets (consolidated check)
         If ws.Visible = xlSheetHidden Or ws.Visible = xlSheetVeryHidden Or ws.ProtectContents Then
@@ -132,28 +150,52 @@ Sub DetectAllWhitespaceIssues_AllSheets_Fast()
                     ' Skip empty strings (performance boost)
                     If Len(originalText) > 0 Then
                         Dim hasIssue As Boolean: hasIssue = False
+                        Dim issueTypes As String: issueTypes = ""
                         
-                        ' OPTIMIZED WHITESPACE DETECTION (combined checks)
-                        ' Check all three conditions in optimal order (most common first)
+                        ' Get cell address for reporting
+                        cellAddress = targetRange.Cells(r, c).Address(False, False)
+                        
+                        ' OPTIMIZED WHITESPACE DETECTION with detailed tracking
                         If InStr(originalText, "  ") > 0 Then
                             multipleCount = multipleCount + 1
                             hasIssue = True
+                            issueTypes = issueTypes & "Multiple spaces; "
                         End If
                         
                         If Left$(originalText, 1) = " " Then
                             leadingCount = leadingCount + 1
                             hasIssue = True
+                            issueTypes = issueTypes & "Leading space; "
                         End If
                         
                         If Right$(originalText, 1) = " " Then
                             trailingCount = trailingCount + 1
                             hasIssue = True
+                            issueTypes = issueTypes & "Trailing space; "
                         End If
                         
-                        ' Mark for highlighting
+                        ' Mark for highlighting and add to detailed report
                         If hasIssue Then
                             totalIssues = totalIssues + 1
                             highlightArray(r, c) = True
+                            
+                            ' Remove trailing semicolon and space
+                            If Right$(issueTypes, 2) = "; " Then
+                                issueTypes = Left$(issueTypes, Len(issueTypes) - 2)
+                            End If
+                            
+                            ' Create visual representation of the text for easy identification
+                            displayText = """" & originalText & """"
+                            ' Add visual indicators for whitespace
+                            displayText = Replace(displayText, " ", "·") ' Replace spaces with middle dots for visibility
+                            
+                            ' Add to sheet report (check length to prevent overflow)
+                            If Len(detailedReport) + Len(sheetReport) < maxReportLength And Not reportTruncated Then
+                                sheetReport = sheetReport & "   " & cellAddress & " → " & displayText & " (" & issueTypes & ")" & vbNewLine
+                            ElseIf Not reportTruncated Then
+                                sheetReport = sheetReport & "   ... [Report truncated - too many issues to display] ..." & vbNewLine
+                                reportTruncated = True
+                            End If
                         End If
                     End If
                 End If
@@ -171,8 +213,14 @@ Sub DetectAllWhitespaceIssues_AllSheets_Fast()
             Next r
         End If
         
-        ' --- EFFICIENT RESULTS TRACKING ---
+        ' --- Add sheet details to main report ---
         If totalIssues > 0 Then
+            ' Add sheet header to detailed report
+            detailedReport = detailedReport & "📋 SHEET: " & ws.Name & " (" & Format$(totalIssues, "#,##0") & " issues)" & vbNewLine & _
+                           String(Len("📋 SHEET: " & ws.Name & " (" & Format$(totalIssues, "#,##0") & " issues)"), "-") & vbNewLine & _
+                           sheetReport & vbNewLine
+            
+            ' Add to summary
             sheetResults = sheetResults & "📋 " & ws.Name & ": " & Format$(totalIssues, "#,##0") & " issues (" & _
                           Format$(leadingCount, "#,##0") & " leading, " & Format$(trailingCount, "#,##0") & " trailing, " & _
                           Format$(multipleCount, "#,##0") & " multiple)" & vbNewLine
@@ -223,13 +271,68 @@ NextSheet:
         message = message & "🎨 Problem cells highlighted in light red across all sheets." & vbNewLine & _
                   "⚡ Ultra-fast analysis completed in " & processingTime & " seconds" & vbNewLine & vbNewLine & _
                   "🔧 Use 'RemoveAllWhitespaceIssues_AllSheets_Fast' to fix all issues."
+        
+        If reportTruncated Then
+            message = message & vbNewLine & vbNewLine & "⚠️ Note: Detailed report was truncated due to size."
+        End If
     End If
     
     If totalSheetsSkipped > 0 Then
         message = message & vbNewLine & vbNewLine & "ℹ️ Note: " & totalSheetsSkipped & " sheets were skipped"
     End If
     
+    ' Show summary first
     MsgBox message, IIf(workbookTotalIssues = 0, vbInformation, vbExclamation), "Ultra-Fast Workbook Analysis"
+    
+    ' Export detailed report to text file if there are issues
+    If workbookTotalIssues > 0 Then
+        ' Add legend and additional info to detailed report
+        detailedReport = detailedReport & vbNewLine & "🔍 LEGEND:" & vbNewLine & _
+                        "   · = Space character (for visibility)" & vbNewLine & _
+                        "   Cell content shown in quotes for clarity" & vbNewLine & _
+                        "   Issues: Leading space, Trailing space, Multiple spaces" & vbNewLine & vbNewLine & _
+                        "📝 EXPORT INFO:" & vbNewLine & _
+                        "   Workbook: " & ThisWorkbook.Name & vbNewLine & _
+                        "   Analysis Date: " & Format$(Now, "yyyy-mm-dd hh:mm:ss") & vbNewLine & _
+                        "   Processing Time: " & processingTime & " seconds"
+        
+        If MsgBox("Would you like to export the detailed cell-by-cell report to a text file?" & vbNewLine & vbNewLine & _
+                 "This will create a file in your Downloads folder showing the exact location" & vbNewLine & _
+                 "and content of each problematic cell.", _
+                 vbQuestion + vbYesNo, "Export Detailed Report") = vbYes Then
+            
+            ' Generate filename with timestamp
+            Dim fileName As String
+            Dim filePath As String
+            Dim downloadsPath As String
+            Dim fileNumber As Integer
+            
+            ' Get Downloads folder path
+            downloadsPath = Environ("USERPROFILE") & "\Downloads\"
+            fileName = "Whitespace_Issues_Report_" & Format$(Now, "yyyy-mm-dd_hh-mm-ss") & ".txt"
+            filePath = downloadsPath & fileName
+            
+            ' Write report to file
+            On Error GoTo FileError
+            fileNumber = FreeFile
+            Open filePath For Output As #fileNumber
+            Print #fileNumber, detailedReport
+            Close #fileNumber
+            
+            MsgBox "✅ Detailed report exported successfully!" & vbNewLine & vbNewLine & _
+                   "📁 File location: " & filePath & vbNewLine & vbNewLine & _
+                   "The file contains " & Format$(workbookTotalIssues, "#,##0") & " whitespace issues " & _
+                   "with exact cell addresses and content.", vbInformation, "Report Exported"
+            
+            GoTo SkipFileError
+            
+FileError:
+            Close #fileNumber ' Ensure file is closed on error
+            MsgBox "❌ Error exporting report to file: " & Err.Description & vbNewLine & vbNewLine & _
+                   "Attempted location: " & filePath, vbExclamation, "Export Error"
+SkipFileError:
+        End If
+    End If
     
     Exit Sub
     
