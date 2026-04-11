@@ -22,7 +22,7 @@ You can download and use the macros in this repository in two ways:
 1. Click the green **Code** button at the top of this page.
 2. Select "Download ZIP".
 3. Once downloaded, unzip the file on your computer.
-4. Inside the unzipped folder, you'll find organized folders such as DataCleaning, Exports, and Utilities, each containing .bas files.
+4. Inside the unzipped folder, you'll find organized folders such as `data-cleaning`, `exports`, and `utilities`, each containing .bas files.
 
 ### Option 2: Download an Individual Macro
 1. Click on the .bas file you want.
@@ -79,17 +79,19 @@ You will now see the Developer tab in the ribbon, which gives access to the VBA 
 Each folder groups macros by category. Below is the current structure:
 
 ```
-Excel-VBA-Toolkit/
-├── Data Cleaning/
-│   ├── DeleteHiddenRowsOptimized.bas
+excel-vba-toolkit/
+├── data-cleaning/
+│   ├── DeleteHiddenRows.bas
 │   ├── FillBlanksDown.bas
 │   └── WhitespaceTools.bas
-├── Exports/
+├── exports/
+│   ├── DocumentFormulas.bas
+│   ├── DocumentTableFormulas.bas
 │   ├── ExportPivotToMarkdown.bas
 │   ├── ExportRangeToCSV.bas
 │   ├── GenerateAdvancedPivotReport.bas
-│   └── GenerateUniversalAITableDoc.bas
-├── Utilities/
+│   └── GenerateTableDoc.bas
+├── utilities/
 │   └── GetHyperlinkURL.bas
 └── README.md
 ```
@@ -100,7 +102,7 @@ Summaries of what each .bas file in the toolkit does:
 
 ### Data Cleaning
 
-#### DeleteHiddenRowsOptimized.bas
+#### DeleteHiddenRows.bas
 Deletes all hidden rows in the active worksheet using a bottom-up approach. Features real-time progress tracking, execution time reporting, and optimized performance for large datasets (50,000+ rows). Useful for cleaning filtered data before analysis or export.
 
 #### FillBlanksDown.bas
@@ -111,6 +113,12 @@ High-performance toolkit for detecting and fixing whitespace issues across entir
 
 ### Exports & Documentation
 
+#### DocumentFormulas.bas
+Documents all formulas on any Excel worksheet and exports them as a structured JSON file. Works with any sheet layout — no Excel Tables required. Includes formula categorization, business intent detection, dependency mapping, error analysis, and optimization hints. Designed for feeding into AI tools for formula review, documentation, and troubleshooting.
+
+#### DocumentTableFormulas.bas
+Scans all Excel Tables (ListObjects) in a workbook and documents their column formulas in a Markdown file. Records formula text, formula category, and cross-table references for each column. Useful for auditing formula logic or generating technical documentation for structured data models.
+
 #### ExportPivotToMarkdown.bas
 Exports the first PivotTable on the active worksheet to GitHub-compatible Markdown format. Preserves table structure with proper pipe delimiters and escapes special characters. Useful for documentation, reports, or sharing pivot analysis in markdown-friendly platforms.
 
@@ -120,8 +128,8 @@ CSV export tool with intelligent data type detection, configurable text quoting,
 #### GenerateAdvancedPivotReport.bas
 Creates documentation for all PivotTables (both OLAP and regular) in a workbook. Includes field configurations, data sources, OLAP connection details, MDX references, calculated fields, and slicer information. Outputs Markdown reports with complete metadata analysis.
 
-#### GenerateUniversalAITableDoc.bas
-Creates documentation of all Excel Tables across every worksheet in the workbook. Features data profiling with intelligent data type detection, sample values, formula transparency with exact syntax and dependency mapping, data quality assessment (CLEAN/WARNING/ERROR flags), and performance optimization guidance. Generates Markdown output designed for feeding to AI tools for Excel analysis, formula generation, and automated data manipulation. Works with datasets from 100 to 100,000+ rows.
+#### GenerateTableDoc.bas
+Creates documentation of all Excel Tables across every worksheet in the workbook. Features data profiling with intelligent data type detection, sample values, formula transparency with exact syntax and dependency mapping, data quality assessment (CLEAN/WARNING/ERROR flags), and performance optimization guidance. Generates Markdown output compatible with any AI tool. Works with datasets from 100 to 100,000+ rows.
 
 ### Utilities
 

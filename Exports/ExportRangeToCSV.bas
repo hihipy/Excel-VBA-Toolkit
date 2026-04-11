@@ -1,3 +1,4 @@
+Attribute VB_Name = "ExportRangeToCSV"
 ' ==========================================================================================
 ' 📌 Macro: ExportRangeToCSV
 ' 📁 Module Purpose:

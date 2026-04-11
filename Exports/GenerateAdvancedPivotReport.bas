@@ -1,3 +1,4 @@
+Attribute VB_Name = "GenerateAdvancedPivotReport"
 ' ==========================================================================================
 ' 📌 Macro: GenerateAdvancedPivotReport
 ' 📁 Module Purpose:
@@ -193,7 +194,7 @@ Private Sub WriteOlapPivotTableDoc(pt As PivotTable, fileNum As Integer, ws As W
     Print #fileNum, "**Connection String Hint**: `" & SafeText(connectionInfo) & "`"
     Print #fileNum, ""
     
-    If includeLayout Then WriteLayoutDetailsInfo pt, fileNum
+    If includeLayout Then WriteLayoutDetails pt, fileNum
     If includeSlicers Then WriteSlicerInfo pt, fileNum
 
     Print #fileNum, "### Why OLAP Filters Are Missing"
@@ -267,9 +268,9 @@ Private Sub WriteRegularPivotTableDoc(pt As PivotTable, fileNum As Integer, ws A
     Print #fileNum, "**Data Source (Name or Range)**: `" & SafeText(pt.SourceData) & "`"
     Print #fileNum, ""
     
-    If includeLayout Then WriteLayoutDetailsInfo pt, fileNum
+    If includeLayout Then WriteLayoutDetails pt, fileNum
     If includeSlicers Then WriteSlicerInfo pt, fileNum
-    If includeCalcFields Then WriteCalculatedFieldsInfo pt, fileNum
+    If includeCalcFields Then WriteCalculatedFields pt, fileNum
     
     Print #fileNum, "### Current Page Filters"
     Print #fileNum, "```"
@@ -321,7 +322,7 @@ Private Sub WriteRegularPivotTableDoc(pt As PivotTable, fileNum As Integer, ws A
     Set pf = Nothing
 End Sub
 
-Private Sub WriteLayoutDetailsInfo(pt As PivotTable, fileNum As Integer)
+Private Sub WriteLayoutDetails(pt As PivotTable, fileNum As Integer)
     On Error Resume Next
     
     ' Test if the file number is valid first
@@ -420,7 +421,7 @@ Private Sub WriteSlicerInfo(pt As PivotTable, fileNum As Integer)
     On Error GoTo 0
 End Sub
 
-Private Sub WriteCalculatedFieldsInfo(pt As PivotTable, fileNum As Integer)
+Private Sub WriteCalculatedFields(pt As PivotTable, fileNum As Integer)
     On Error Resume Next
     If pt.CalculatedFields.Count > 0 Then
         Dim cf As Object  ' Changed from CalculatedField to Object
@@ -684,7 +685,7 @@ Private Function GetFunctionText(func As XlConsolidationFunction) As String
     End Select
 End Function
 
-Public Sub TestTheCall()
+Public Sub TestPivotReport()
     Dim pt As PivotTable
     Dim fileNum As Integer
     
@@ -698,8 +699,8 @@ Public Sub TestTheCall()
     End If
     
     fileNum = 1
-    Debug.Print "Attempting to call WriteLayoutDetailsInfo..."
-    WriteLayoutDetailsInfo pt, fileNum
-    Debug.Print "Call to WriteLayoutDetailsInfo was successful."
+    Debug.Print "Attempting to call WriteLayoutDetails..."
+    WriteLayoutDetails pt, fileNum
+    Debug.Print "Call to WriteLayoutDetails was successful."
     MsgBox "Test completed successfully!", vbInformation
 End Sub

@@ -1,3 +1,4 @@
+Attribute VB_Name = "ExportPivotToMarkdown"
 ' ==========================================================================================
 ' 📌 Macro: ExportPivotToMarkdown
 ' 📁 Module Purpose:

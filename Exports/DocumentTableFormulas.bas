@@ -1,3 +1,4 @@
+Attribute VB_Name = "DocumentTableFormulas"
 ' ==========================================================================================
 ' 📌 Macro: DocumentTableFormulas
 ' 📁 Module Purpose:

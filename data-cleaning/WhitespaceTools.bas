@@ -1,3 +1,4 @@
+Attribute VB_Name = "WhitespaceTools"
 ' ==========================================================================================
 ' 📌 Macro Suite: WhitespaceTools
 ' 📁 Module Purpose:
@@ -10,7 +11,7 @@
 ' ✅ Key Features & Enhancements:
 '     - DetectAllWhitespaceIssues_AllSheets_WithDetailedReport: Ultra-efficient single-pass 
 '       processing that detects, highlights, AND provides detailed cell-by-cell reports.
-'     - RemoveAllWhitespaceIssues_AllSheets_Fast: Bulk cleaning operations across all
+'     - RemoveWhitespaceIssues: Bulk cleaning operations across all
 '       sheets with optimized memory management and minimal object model calls.
 '     - ClearAllHighlighting_AllSheets_Fast: Instant formatting removal from all sheets.
 '     - Advanced performance optimizations: 50-80% faster than previous versions.
@@ -44,7 +45,7 @@ Option Explicit
 '  ULTRA-EFFICIENT ALL-SHEETS MACROS WITH ENHANCED REPORTING
 '==================================================================================================
 
-Sub DetectAllWhitespaceIssues_AllSheets_WithDetailedReport()
+Sub DetectWhitespaceIssues()
     '==========================================================================
     ' PURPOSE: Ultra-fast comprehensive whitespace detection with detailed cell-by-cell report
     ' ENHANCEMENT: Shows exact cell addresses and content for each whitespace issue
@@ -270,7 +271,7 @@ NextSheet:
         
         message = message & "🎨 Problem cells highlighted in light red across all sheets." & vbNewLine & _
                   "⚡ Ultra-fast analysis completed in " & processingTime & " seconds" & vbNewLine & vbNewLine & _
-                  "🔧 Use 'RemoveAllWhitespaceIssues_AllSheets_Fast' to fix all issues."
+                  "🔧 Use 'RemoveWhitespaceIssues' to fix all issues."
         
         If reportTruncated Then
             message = message & vbNewLine & vbNewLine & "⚠️ Note: Detailed report was truncated due to size."
@@ -345,7 +346,7 @@ ErrorHandler:
            "Sheet: " & IIf(ws Is Nothing, "Unknown", ws.Name), vbCritical, "Error"
 End Sub
 
-Sub RemoveAllWhitespaceIssues_AllSheets_Fast()
+Sub RemoveWhitespaceIssues()
     '==========================================================================
     ' PURPOSE: Ultra-fast whitespace cleaning across ALL sheets
     ' OPTIMIZATIONS: Bulk operations, minimal object calls, optimized string handling
@@ -503,7 +504,7 @@ ErrorHandler:
            "Sheet: " & IIf(ws Is Nothing, "Unknown", ws.Name), vbCritical, "Error"
 End Sub
 
-Sub ClearAllHighlighting_AllSheets_Fast()
+Sub ClearWhitespaceHighlighting()
     '==========================================================================
     ' PURPOSE: Ultra-fast highlighting removal across ALL sheets
     '==========================================================================

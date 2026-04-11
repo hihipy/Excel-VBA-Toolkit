@@ -1,5 +1,6 @@
+Attribute VB_Name = "DeleteHiddenRows"
 ' ==========================================================================================
-' 📌 Macro: DeleteAllHiddenRows_BottomUp
+' 📌 Macro: DeleteHiddenRows
 ' 📁 Module Purpose:
 '     Deletes all hidden rows in the active worksheet, working from bottom to top.
 '     Optimized for large datasets using Union batching, progress feedback, and time tracking.
@@ -26,7 +27,7 @@
 '     - Union batching is significantly faster than row-by-row deletion on large datasets
 '
 ' ==========================================================================================
-Sub DeleteAllHiddenRows_BottomUp()
+Sub DeleteHiddenRows()
     Dim lastRow As Long, iCntr As Long
     Dim ws As Worksheet
     Dim startTime As Double, deletedRows As Long

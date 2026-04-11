@@ -1,3 +1,4 @@
+Attribute VB_Name = "GenerateTableDoc"
 ' ==========================================================================================
 ' 📌 Macro: GenerateUniversalAITableDoc
 ' 📁 Module Purpose:
@@ -37,7 +38,7 @@
 '
 ' ==========================================================================================
 
-Sub GenerateUniversalAITableDoc()
+Sub GenerateTableDoc()
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim tbl As ListObject
@@ -138,10 +139,10 @@ Function ProcessTable(tbl As ListObject) As String
         Dim aiNotes As String
         Dim formulaInfo As String
         
-        dataType = GetRealDataType(col)
+        dataType = GetDataType(col)
         samples = GetSampleValues(col)
         qualityFlag = GetQualityFlag(col)
-        aiNotes = GetUniversalAICodeNotes(dataType)
+        aiNotes = GetCodeNotes(dataType)
         
         ' Add formula information if it's a formula column
         If dataType = "Formula" Then
@@ -172,29 +173,29 @@ Function ProcessTable(tbl As ListObject) As String
     ProcessTable = output
 End Function
 
-Function GetUniversalAICodeNotes(dataType As String) As String
+Function GetCodeNotes(dataType As String) As String
     ' Purely agnostic notes based only on data type
     Select Case dataType
         Case "Currency", "Number"
-            GetUniversalAICodeNotes = "Numeric/aggregate candidate"
+            GetCodeNotes = "Numeric/aggregate candidate"
         Case "Date"
-            GetUniversalAICodeNotes = "Date calculations/filtering"
+            GetCodeNotes = "Date calculations/filtering"
         Case "Text"
-            GetUniversalAICodeNotes = "Category/filter or text lookup"
+            GetCodeNotes = "Category/filter or text lookup"
         Case "Formula"
-            GetUniversalAICodeNotes = "Calculated field"
+            GetCodeNotes = "Calculated field"
         Case "Empty"
-            GetUniversalAICodeNotes = "Empty column - consider removing"
+            GetCodeNotes = "Empty column - consider removing"
         Case Else
-            GetUniversalAICodeNotes = "General data field"
+            GetCodeNotes = "General data field"
     End Select
 End Function
 
-Function GetRealDataType(col As ListColumn) As String
+Function GetDataType(col As ListColumn) As String
     On Error GoTo ErrorHandler
     
     If col.DataBodyRange Is Nothing Then
-        GetRealDataType = "Empty"
+        GetDataType = "Empty"
         Exit Function
     End If
     
@@ -233,22 +234,22 @@ Function GetRealDataType(col As ListColumn) As String
     
     ' Determine dominant type
     If formulaCount > 0 Then
-        GetRealDataType = "Formula"
+        GetDataType = "Formula"
     ElseIf emptyCount = totalCells Then
-        GetRealDataType = "Empty"
+        GetDataType = "Empty"
     ElseIf currencyCount > totalCells * 0.5 Then
-        GetRealDataType = "Currency"
+        GetDataType = "Currency"
     ElseIf dateCount > totalCells * 0.5 Then
-        GetRealDataType = "Date"
+        GetDataType = "Date"
     ElseIf numberCount > totalCells * 0.5 Then
-        GetRealDataType = "Number"
+        GetDataType = "Number"
     Else
-        GetRealDataType = "Text"
+        GetDataType = "Text"
     End If
     
     Exit Function
 ErrorHandler:
-    GetRealDataType = "Unknown"
+    GetDataType = "Unknown"
 End Function
 
 Function GetSampleValues(col As ListColumn) As String
@@ -409,7 +410,7 @@ Function GetFormulaDependenciesSection(tbl As ListObject) As String
     Dim hasDependencies As Boolean
     
     For Each col In tbl.ListColumns
-        If GetRealDataType(col) = "Formula" Then
+        If GetDataType(col) = "Formula" Then
             Dim deps As String
             deps = GetFormulaDependencies(col)
             If deps <> "" Then
@@ -489,7 +490,7 @@ Function GetPerformanceSection(tbl As ListObject) As String
     
     ' Count formula columns
     For Each col In tbl.ListColumns
-        If GetRealDataType(col) = "Formula" Then
+        If GetDataType(col) = "Formula" Then
             formulaCount = formulaCount + 1
         End If
     Next col

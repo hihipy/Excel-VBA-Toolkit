@@ -1,3 +1,4 @@
+Attribute VB_Name = "GetHyperlinkURL"
 ' ==========================================================================================
 ' 🔗 Function: GetHyperlinkURL(cellRef As Range) As String
 ' 📁 Purpose:

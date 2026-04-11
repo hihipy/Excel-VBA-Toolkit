@@ -1,3 +1,4 @@
+Attribute VB_Name = "DocumentFormulas"
 ' ==========================================================================================
 ' 🤖 Macro: DocumentAllFormulasForAI
 ' 📁 Module Purpose:
@@ -25,7 +26,7 @@
 '
 ' ==========================================================================================
 
-Sub DocumentAllFormulasForAI()
+Sub DocumentFormulas()
     Dim ws As Worksheet
     Dim cell As Range
     Dim formulaCount As Integer
@@ -74,7 +75,7 @@ Sub DocumentAllFormulasForAI()
     For Each cell In ws.UsedRange
         If cell.HasFormula Then
             If Not isFirstFormula Then jsonOutput = jsonOutput & "," & vbNewLine
-            jsonOutput = jsonOutput & ProcessFormulaForAI(cell, ws)
+            jsonOutput = jsonOutput & ProcessFormula(cell, ws)
             isFirstFormula = False
         End If
     Next cell
@@ -95,9 +96,9 @@ Sub DocumentAllFormulasForAI()
     jsonOutput = jsonOutput & "}"
     
     ' Save with AI-friendly filename
-    outputPath = ChooseAIOutputLocation(ws.Name)
+    outputPath = ChooseOutputLocation(ws.Name)
     If outputPath <> "" Then
-        SaveAIOutput jsonOutput, outputPath
+        SaveOutput jsonOutput, outputPath
         MsgBox "🤖 AI-optimized formula documentation created!" & vbNewLine & vbNewLine & _
                "📊 " & formulaCount & " formulas documented" & vbNewLine & _
                "⚡ " & Format(Timer - startTime, "0.0") & " seconds processing" & vbNewLine & _
@@ -114,7 +115,7 @@ Sub DocumentAllFormulasForAI()
     End If
 End Sub
 
-Function ProcessFormulaForAI(cell As Range, ws As Worksheet) As String
+Function ProcessFormula(cell As Range, ws As Worksheet) As String
     Dim output As String
     Dim cellAddress As String
     Dim formulaText As String
@@ -160,7 +161,7 @@ Function ProcessFormulaForAI(cell As Range, ws As Worksheet) As String
     output = output & "      }" & vbNewLine
     output = output & "    }"
     
-    ProcessFormulaForAI = output
+    ProcessFormula = output
 End Function
 
 Function GetWorksheetContext(ws As Worksheet) As String
@@ -624,7 +625,7 @@ Function EscapeJsonString(str As String) As String
     EscapeJsonString = result
 End Function
 
-Function ChooseAIOutputLocation(sheetName As String) As String
+Function ChooseOutputLocation(sheetName As String) As String
     Dim defaultPath As String
     Dim userPath As String
     
@@ -636,7 +637,7 @@ Function ChooseAIOutputLocation(sheetName As String) As String
                        "Default location:", "Save AI Formula Documentation", defaultPath)
     
     If userPath = "" Then
-        ChooseAIOutputLocation = ""
+        ChooseOutputLocation = ""
         Exit Function
     End If
     
@@ -644,10 +645,10 @@ Function ChooseAIOutputLocation(sheetName As String) As String
         userPath = userPath & ".json"
     End If
     
-    ChooseAIOutputLocation = userPath
+    ChooseOutputLocation = userPath
 End Function
 
-Sub SaveAIOutput(content As String, filePath As String)
+Sub SaveOutput(content As String, filePath As String)
     Dim fileNum As Integer
     fileNum = FreeFile
     
