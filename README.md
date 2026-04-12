@@ -1,4 +1,4 @@
-# excel-vba-toolkit (.bas Modules)
+# excel-vba-toolkit
 
 A collection of Excel VBA macros, organized as .bas code modules for easy reuse and import into any Excel workbook.
 
